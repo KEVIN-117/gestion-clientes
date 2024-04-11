@@ -11,7 +11,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="style.css">
 </head>
-<body onload="getData()" class="relative h-screen overflow-hidden">
+<body class="relative h-screen overflow-hidden">
 
     <main class="relative flex dark:bg-dark-tremor-background-main bg-tremor-background md:h-screen h-auto flex-col md:flex-row md:overflow-hidden text-tremor-background-emphasis dark:text-tremor-background gap-x-2">
         <aside class="set-bg-opacity w-full flex-none md:w-64 rounded-lg">
@@ -37,12 +37,7 @@
 
         </aside>
         <div class="set-bg-opacity w-full rounded-lg overflow-y-scroll" id="main-content">
-            <h1>Supabase</h1>
-            <form onsubmit="postData(event)">
-                <input type="file" name="avatar" id="avatar" accept="image/*">
-                <button type="submit"  >Upload</button>
-            </form>
-            <div id="app"></div>
+
         </div>
     </main>
     <div class="absolute inset-x-0 top-0 -z-10 transform-gpu overflow-hidden blur-3xl" aria-hidden="true">

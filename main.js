@@ -125,7 +125,7 @@ const statics = {
 
                                 </div>
                             </div>
-                            <form id="miFormulario" class="w-full border-t-8 border-[#007bff] p-4 rounded-xl shadow-md" onsubmit="sendForm(event)">
+                            <form id="miFormulario" class="w-full border-t-8 border-[#007bff] p-4 rounded-xl shadow-md" >
                                 
                                 <label for="name">Nombre:</label>
                                 <input type="text" name="name" id="name" required>
@@ -195,57 +195,8 @@ const statics = {
         `
     }
 };
-/*
-import {v2 as cloudinary} from 'cloudinary';
-
-cloudinary.config({
-  ,
-  api_key: '583656942886217',
-  api_secret: 'OZ5hx93JeYjpMccQ7aEF_SYmg6U'
 
 
-});
-
-
- */
-
-/*
-format: "jpg"
-width: 736
-height: 1648
-original_filename: "descarga"
-placeholder: false
-public_id: "wzytiaec8ghq8f0gcdqe"
-resource_type: "image"
-secure_url: "https://res.cloudinary.com/disvwilxi/image/upload/v1712812656/wzytiaec8ghq8f0gcdqe.jpg"
- */
-const cloudName = 'disvwilxi'
-const unsignedUploadPreset = 'lfixnbco';
-async function postData(event){
-    event.preventDefault();
-    const avatarFile = event.target.avatar.files[0]
-    const formData = new FormData();
-    formData.append('file', avatarFile);
-    formData.append('upload_preset', unsignedUploadPreset);
-    const response = await fetch(`https://api.cloudinary.com/v1_1/${cloudName}/upload`, {
-        method: 'POST',
-        body: formData,
-    });
-
-    if (response.ok) {
-        alert('File uploaded successfully')
-        const {format, width, height, original_filename, secure_url} = await response.json()
-        const app = document.getElementById('app')
-        app.innerHTML = `
-            <img src="${secure_url}" alt="${original_filename}" width="${width}" height="${height}">
-            <p>Format: ${format}</p>
-        `
-    } else {
-        alert('Failed to upload file')
-        const data = await response.json()
-        console.log(data)
-    }
-}
 
 function viewProfile(event){
     event.preventDefault()
