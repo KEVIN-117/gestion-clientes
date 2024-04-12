@@ -1,3 +1,7 @@
+const URL_DB = "https://gestion-clientes-79743-default-rtdb.firebaseio.com/"
+const cloudName = "disvwilxi"
+const URL_STORAGE= `https://api.cloudinary.com/v1_1/${cloudName}/upload`
+const preset = "clientes"
 document.addEventListener("DOMContentLoaded", function () {
     const mainContent = document.getElementById("main-content");
 
@@ -125,8 +129,7 @@ const statics = {
 
                                 </div>
                             </div>
-                            <form id="miFormulario" class="w-full border-t-8 border-[#007bff] p-4 rounded-xl shadow-md" >
-                                
+                            <form id="miFormulario" class="w-full border-t-8 border-[#007bff] p-4 rounded-xl shadow-md" onsubmit="postData(event)">
                                 <label for="name">Nombre:</label>
                                 <input type="text" name="name" id="name" required>
                                 <br>
@@ -276,63 +279,250 @@ function fackeData(){
 }
 
 
-function loadFakeData(){
+async function loadFakeData(){
     const app = document.getElementById('app-profile')
 
-    const data = fackeData()
+    const data = await fetch(`${URL_DB}clientes.json`)
+
     console.log(data)
-    data.forEach((user)=>{
+    const clients = await data.json()
+
+    for (const id in clients) {
+        const user = clients[id]
+
         const container = document.createElement('div')
-        container.className = 'flex flex-col border-2 border-gray-300 rounded-lg overflow-hidden shadow-lg'
+        container.id = "userContent"
+        container.className = 'flex relative flex-col border-2 border-gray-300 rounded-lg overflow-hidden shadow-lg'
         container.innerHTML = `
-            <div>
-                <img src="${user.avatar}" alt="${user.name}" class="h-[50vh] w-full object-cover">
-            <div class="set-bg-opacity p-5 grid grid-col-1 gap-5">
-                <div class="flex justify-between set-bg-opacity p-2 border-l-4 border-indigo-600 text-2xl font-bold rounded-md">
-                    <h2>Name</h2>
-                    <h2>${user.name} ${user.lastName}</h2>
+            <div class="relative">
+                <img src="${user.profile.url}" alt="${user.profile.name}" class="h-[50vh] w-full object-cover">
+                <div class="set-bg-opacity p-5 grid grid-col-1 gap-5">
+                    <div class="flex justify-between set-bg-opacity p-2 border-l-4 border-indigo-600 text-2xl font-bold rounded-md">
+                        <h2>Name</h2>
+                        <h2>${user.name} ${user.lastName}</h2>
+                    </div>
+                    <div class="flex justify-between set-bg-opacity p-2 border-l-4 border-indigo-600 text-2xl font-bold rounded-md">
+                        <h2>Email</h2>
+                        <h2>${user.email}</h2>
+                    </div>
+                    <div class="flex justify-between set-bg-opacity p-2 border-l-4 border-indigo-600 text-2xl font-bold rounded-md">
+                        <h2>Birthdate</h2>
+                        <h2>${user.birthdate}</h2>
+                    </div>
+                    <div class="flex justify-between set-bg-opacity p-2 border-l-4 border-indigo-600 text-2xl font-bold rounded-md">
+                        <h2 > Gender</h2>
+                        <h2 >${user.gender}</h2>
+                    </div>
+                    
+                    <div class="flex justify-between set-bg-opacity p-2 border-l-4 border-indigo-600 text-2xl font-bold rounded-md">
+                        <h2 > Phone</h2>
+                        <h2 >${user.phone}</h2>
+                    </div>
+                    
+                    <div class="flex justify-between set-bg-opacity p-2 border-l-4 border-indigo-600 text-2xl font-bold rounded-md">
+                        <h2 > Address</h2>
+                        <h2 >${user.address}</h2>
+                    </div>
                 </div>
-                <div class="flex justify-between set-bg-opacity p-2 border-l-4 border-indigo-600 text-2xl font-bold rounded-md">
-                    <h2>Email</h2>
-                    <h2>${user.email}</h2>
+                <div class="grid grid-cols-2 gap-5 p-5 set-bg-opacity">
+                    <button class="w-full border rounded-md btn btn-outline btn-success flex md:justify-between justify-center" onclick="updateClient('${id}')">
+                        <svg class="w-6 h-6 " aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                          <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m14.304 4.844 2.852 2.852M7 7H4a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h11a1 1 0 0 0 1-1v-4.5m2.409-9.91a2.017 2.017 0 0 1 0 2.853l-6.844 6.844L8 14l.713-3.565 6.844-6.844a2.015 2.015 0 0 1 2.852 0Z"/>
+                        </svg>
+    
+                        Edit
+                    </button>
+                    <button class="w-full border rounded-md btn btn-outline btn-error flex md:justify-between justify-center" onclick="deleteClient('${id}')">
+                        <svg class="w-6 h-6" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                          <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 7h14m-9 3v8m4-8v8M10 3h4a1 1 0 0 1 1 1v3H9V4a1 1 0 0 1 1-1ZM6 7h12v13a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V7Z"/>
+                        </svg>
+    
+                        Delete  
+                    </button>
                 </div>
-                <div class="flex justify-between set-bg-opacity p-2 border-l-4 border-indigo-600 text-2xl font-bold rounded-md">
-                    <h2>Birthdate</h2>
-                    <h2>${user.birthdate}</h2>
-                </div>
-                <div class="flex justify-between set-bg-opacity p-2 border-l-4 border-indigo-600 text-2xl font-bold rounded-md">
-                    <h2 > Gender</h2>
-                    <h2 >${user.gender}</h2>
-                </div>
-                
-                <div class="flex justify-between set-bg-opacity p-2 border-l-4 border-indigo-600 text-2xl font-bold rounded-md">
-                    <h2 > Phone</h2>
-                    <h2 >${user.phone}</h2>
-                </div>
-                
-                <div class="flex justify-between set-bg-opacity p-2 border-l-4 border-indigo-600 text-2xl font-bold rounded-md">
-                    <h2 > Address</h2>
-                    <h2 >${user.address}</h2>
-                </div>
-            </div>
-            <div class="grid grid-cols-2 gap-5 p-5 set-bg-opacity">
-                <button class="w-full border rounded-md btn btn-outline btn-success flex md:justify-between justify-center">
-                    <svg class="w-6 h-6 " aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
-                      <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m14.304 4.844 2.852 2.852M7 7H4a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h11a1 1 0 0 0 1-1v-4.5m2.409-9.91a2.017 2.017 0 0 1 0 2.853l-6.844 6.844L8 14l.713-3.565 6.844-6.844a2.015 2.015 0 0 1 2.852 0Z"/>
-                    </svg>
-
-                    Edit
-                </button>
-                <button class="w-full border rounded-md btn btn-outline btn-error flex md:justify-between justify-center">
-                    <svg class="w-6 h-6" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
-                      <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 7h14m-9 3v8m4-8v8M10 3h4a1 1 0 0 1 1 1v3H9V4a1 1 0 0 1 1-1ZM6 7h12v13a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V7Z"/>
-                    </svg>
-
-                    Delete  
-                </button>
-            </div>
             </div>
         `
         app.appendChild(container)
+    }
+}
+
+// funcionalidad para enviar datos a la base de datos
+
+async function postData(event) {
+    event.preventDefault()//
+
+    const name = event.target.name.value
+    const lastName = event.target.lastName.value
+    const email = event.target.email.value
+    const birthdate = event.target.birthdate.value
+    const gender = event.target.gender.value
+    const phone = event.target.phone.value
+    const address = event.target.address.value
+    const avatar = event.target.avatar.files[0]
+
+    const formData = new FormData()
+
+    formData.append("file",avatar)
+    formData.append("upload_preset",preset)
+
+    const response = await fetch(URL_STORAGE, {
+        method:"POST",
+        body: formData
     })
+
+
+    const {secure_url, width, height, original_filename, format} = await response.json()
+
+
+    const data = {
+        name,
+        lastName,
+        email,
+        birthdate,
+        gender,
+        phone,
+        address,
+        profile:{
+            url: secure_url,
+            width,
+            height,
+            name:original_filename,
+            format
+        }
+    }
+
+    const resDb= await fetch(`${URL_DB}clientes.json`,{
+        method:"POST",
+        body:JSON.stringify(data)
+    })
+
+    if (resDb.ok){
+        alert("Cliente registrado")
+        window.location.reload()
+    }else {
+        alert("Error")
+    }
+}
+
+async function deleteClient(id){
+    const  res = await fetch(`${URL_DB}clientes/${id}.json`, {
+        method:"DELETE",
+    })
+    if (res.ok){
+        alert("Cliente Eliminado")
+        window.location.reload()
+    }else {
+        alert("ERROR")
+    }
+}
+
+async function updateClient(id){
+    const data = await fetch(`${URL_DB}clientes/${id}.json`)
+    const user = await data.json()
+    const userContent = document.getElementById("userContent")
+    const div = document.createElement("div")
+    div.className = "absolute top-0 left-0 right-0 bottom-0"
+    div.id= "userUpdateContent"
+    div.innerHTML = `
+        <div class="grid grid-cols-2 p-5 gap-5">
+                            <div class="set-bg-opacity border-t-8 border-[#007bff] rounded-xl shadow-md">
+                                <div id="profile" class="w-full h-full flex flex-col justify-center items-center">
+                                    <h2 class="text-2xl title w-full text-center py-5"
+                                        style="background: rgba(0, 0, 0, 0.9);"
+                                    >
+                                        Imagen de perfil
+                                    </h2>
+                                    <img class="h-[80vh] w-full rounded-lg object-cover" src="${user.profile.url}" alt="${user.profile.name}">
+
+                                </div>
+                            </div>
+                            <form id="miFormulario" class="w-full border-t-8 border-[#007bff] p-4 rounded-xl shadow-md" onsubmit="update(event, '${id}')">
+                                <label for="name">Nombre:</label>
+                                <input type="text" value="${user.name}" name="name" id="name">
+                                <br>
+                                <label for="lastName">Apellido:</label>
+                                <input type="text" value="${user.lastName}" name="lastName" id="lastName">
+                                <br>
+                                <label for="email">Email:</label>
+                                <input type="email" value="${user.email}" name="email" id="email">
+                                <br>
+                                <label for="birthdate">Fecha de Nacimiento:</label>
+                                <input type="date" value="${user.birthdate}" name="birthdate" id="birthdate">
+                                <br>
+                                <label for="gender">Género:</label>
+                                <select name="gender" >
+                                    <option value="Female">Female</option>
+                                    <option value="Male">Male</option>
+                                </select>
+                                <br>
+                                <label for="phone">Telefono:</label>
+                                <input type="text" value="${user.phone}" name="phone" id="phone">
+                                <br>
+                                <label for="address">Direccion:</label>
+                                <input type="text" value="${user.address}" name="address" id="address">
+                                <br>
+                                <label for="avatar">Avatar:</label>
+                                <input type="file" name="avatar" id="avatar" onchange="viewProfile(event)">
+                                <br>
+                                <button 
+                                    type="submit" 
+                                    style="
+                                        background-color: #007bff;
+                                        color: white;
+                                        border: none;
+                                        padding: 10px;
+                                        border-radius: 5px;
+                                        cursor: pointer;"
+                                >
+                                    Actualizar
+                                </button>
+                            </form>
+                        </div>
+    `
+    userContent.appendChild(div)
+}
+
+async function update(event, id){
+    event.preventDefault()
+    const name = event.target.name.value
+    const lastName = event.target.lastName.value
+    const email = event.target.email.value
+    const birthdate = event.target.birthdate.value
+    const gender = event.target.gender.value
+    const phone = event.target.phone.value
+    const address = event.target.address.value
+
+
+    const res = await fetch(`${URL_DB}clientes/${id}.json`)
+
+    const data = await res.json()
+
+    const user = {
+        name,
+        lastName,
+        email,
+        birthdate,
+        gender,
+        phone,
+        address
+    }
+
+    const fullUser= {
+        ...data,
+        ...user,
+    }
+
+    const resUpdate = await fetch(`${URL_DB}clientes/${id}.json`, {
+        method:"PATCH",
+        body: JSON.stringify(fullUser)
+    })
+
+    const userUpdateContent = document.getElementById("userUpdateContent")
+    if (resUpdate.ok) {
+        alert("Usuario Actualizado")
+        userUpdateContent.remove()
+        window.location.reload()
+    }else{
+        alert("Error al actualizar")
+    }
 }
