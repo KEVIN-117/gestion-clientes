@@ -189,7 +189,7 @@ const statics = {
                             border-radius: 5px;
                             cursor: pointer;"
                     >
-                        Cargar datos falsos
+                        Cargar Datos
                     </button>
             </div>
             <div id="app-profile" class="grid grid-cols-3 gap-5 p-5">
@@ -292,9 +292,9 @@ async function loadFakeData(){
 
         const container = document.createElement('div')
         container.id = "userContent"
-        container.className = 'flex relative flex-col border-2 border-gray-300 rounded-lg overflow-hidden shadow-lg'
+        container.className = 'flex flex-col border-2 border-gray-300 rounded-lg overflow-hidden shadow-lg'
         container.innerHTML = `
-            <div class="relative">
+            <div class="">
                 <img src="${user.profile.url}" alt="${user.profile.name}" class="h-[50vh] w-full object-cover">
                 <div class="set-bg-opacity p-5 grid grid-col-1 gap-5">
                     <div class="flex justify-between set-bg-opacity p-2 border-l-4 border-indigo-600 text-2xl font-bold rounded-md">
@@ -421,10 +421,12 @@ async function updateClient(id){
     const user = await data.json()
     const userContent = document.getElementById("userContent")
     const div = document.createElement("div")
-    div.className = "absolute top-0 left-0 right-0 bottom-0"
+    div.className = "absolute top-0 bottom-0"
     div.id= "userUpdateContent"
     div.innerHTML = `
-        <div class="grid grid-cols-2 p-5 gap-5">
+        <div class="grid grid-cols-2 gap-5 backdrop-blur-xl set-box-shadow"
+            style="box-shadow: 0 0 10px rgba(0, 0, 0, 0.5), ;"
+        >
                             <div class="set-bg-opacity border-t-8 border-[#007bff] rounded-xl shadow-md">
                                 <div id="profile" class="w-full h-full flex flex-col justify-center items-center">
                                     <h2 class="text-2xl title w-full text-center py-5"
@@ -476,6 +478,20 @@ async function updateClient(id){
                                 >
                                     Actualizar
                                 </button>
+
+                                <br>
+                                <button 
+                                    onclick="cancelUpdate()" 
+                                    style="
+                                        background-color: #007bff;
+                                        color: white;
+                                        border: none;
+                                        padding: 10px;
+                                        border-radius: 5px;
+                                        cursor: pointer;"
+                                >
+                                    Cancelar
+                                </button>
                             </form>
                         </div>
     `
@@ -525,4 +541,9 @@ async function update(event, id){
     }else{
         alert("Error al actualizar")
     }
+}
+
+function cancelUpdate(){
+    const userUpdateContent = document.getElementById("userUpdateContent")
+    userUpdateContent.remove()
 }

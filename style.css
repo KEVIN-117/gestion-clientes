@@ -40,3 +40,8 @@ input:focus {
 label {
     margin-top: 10px;
 }
+
+
+.set-box-shadow {
+    box-shadow: #06b6d4 0px 0px 15px, inset rgba(0,163,255,0.8) 0px 0px 20px, #4d00ff 0px 0px 20px, #4d00ff 0px 0px 40px, #4d00ff 0px 0px 80px, #4d00ff 0px 0px 160px, #4d00ff 0px 0px 320px;
+}
